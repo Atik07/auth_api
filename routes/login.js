@@ -1,4 +1,5 @@
 const express = require("express");
+require("dotenv").config(); //no need to create a const
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 
@@ -16,7 +17,18 @@ router.post("/login", async (req, res) => {
     return res.send("incorrect password");
   }
 
-  res.redirect("/");
+  try {
+    jwt.sign(
+      { email: isPresent.email },
+      process.env.TOKEN_KEY,
+      { expiresIn: "1h" },
+      (err, token) => {
+        res.send(token);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 module.exports = router;
